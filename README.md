@@ -2,9 +2,12 @@
 
 **What can orbital data explain about how Perseverance actually drives?**
 
-This project plans rover routes across real terrain in Jezero Crater, then compares them with the
-drives Perseverance actually made. The places where they disagree show what orbital data can and
-can't explain.
+This project processes USGS elevation data from Jezero Crater to create terrain maps of slope, aspect,
+roughness, and step height, then investigates how accurately those measurements describe the terrain
+Perseverance actually drove across, without being intended for mission planning.
+
+Next, it will plan routes across the same terrain and compare them with the real drives, to show what
+orbital data can and can't explain.
 
 > Work in progress. Independent student project, not affiliated with or endorsed by NASA or USGS.
 > Not for real mission planning.
@@ -78,7 +81,7 @@ whole file. To reproduce the full-map results, which need about 6 GB of free dis
 
 **Data:** USGS Astrogeology and NASA. See [docs/DATA.md](docs/DATA.md) for sources and citations.
 
-**AI use:** this project is built with substantial help from Claude, Anthropic's AI assistant. Claude
-wrote the Stage 1 code, tests and documentation, and identified the issues described above. This
-section will be updated as the project continues, to show which decisions, code and analysis are
-mine.
+**AI use:** Most of this project's code, tests and documentation were written by Claude, Anthropic's AI
+assistant. I chose the direction of the project and am responsible for checking and understanding the
+results. This section will be updated to show which decisions and analysis are mine. My own experiment
+and answers so far are in [docs/checkpoints/stage1-answers.md](docs/checkpoints/stage1-answers.md).
