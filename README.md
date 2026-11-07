@@ -18,7 +18,7 @@ orbital data can and can't explain.
 |---|---|---|
 | 1 | Terrain engine: load huge maps, measure slope, roughness and step height | Done |
 | 2 | Rover model: hazard limits and energy | First version done, with assumptions to review. See [decisions](docs/decisions.md) and [evidence](docs/stage2_evidence.md) |
-| 3 | Route planner | Not started |
+| 3 | Route planner | First version done. It doesn't yet beat a straight line on short drives. See [notes](docs/stage3_notes.md) |
 | 4 | Replay real drives and measure differences | Not started |
 | 5 | Estimate what the real drives prioritized | Not started |
 | 6+ | Vision, uncertainty, new mission and public website | Not started |
