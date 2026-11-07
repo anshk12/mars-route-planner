@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Large data: GitHub rejects files over 100 MB, and these can be re-created.
+# See docs/DATA.md for how to get them.
+data/
+*.tif
+*.tiff
+
+# Your private project log and essay notes
+private/
