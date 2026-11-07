@@ -59,6 +59,7 @@ were too easy to show what the planner adds. A low distance on its own doesn't s
   Stage 4 needs segments in between, and a straight-line baseline to beat.
 - **Held-out drives:** some drives must be set aside before choosing any limits or weights.
 - **Grid-shaped routes:** moving in 8 directions gives staircase-like paths, and routes can look odd, with long diagonals
-  and sudden straight sections. Lengths can run a few percent high. Smoothing hasn't been added.
+  and sudden straight sections. The results above aren't smoothed. Stage 4 added smoothing, and
+  [its results](stage4_development.md) replace the single-drive comparison here.
 - **Weights are provisional:** Stage 5 is meant to estimate them from real drives.
 - **Route endpoints:** these get moved to the nearest drivable cell when a real stop lands on blocked ground.

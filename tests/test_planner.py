@@ -5,6 +5,7 @@ import math
 import numpy as np
 import pytest
 
+from mars_rover.evaluation.segments import straight_line
 from mars_rover.planner.search import (
     BALANCED,
     CAUTIOUS,
@@ -12,9 +13,11 @@ from mars_rover.planner.search import (
     PlanningGrid,
     RoutePreferences,
     build_grid,
+    move_costs,
     nearest_passable,
     plan_route,
     search_grid,
+    smooth_route,
 )
 from mars_rover.rover.energy import RoverPhysics, energy_per_meter
 from mars_rover.rover.hazards import HazardClass
@@ -169,6 +172,75 @@ def test_coarse_and_fine_searches_find_similar_routes():
     assert quick.cost <= exact.cost * 1.10
     assert quick.nodes_expanded < exact.nodes_expanded * 1.5
     assert all(grid.passable[cell] for cell in quick.cells)
+
+
+def test_move_costs_match_the_search():
+    rng = np.random.default_rng(9)
+    grid = flat_grid(50, 50)
+    grid.dz_east[:] = rng.normal(0, 0.1, grid.shape)
+    grid.dz_north[:] = rng.normal(0, 0.1, grid.shape)
+    grid.penalty[:] = rng.uniform(0, 2, grid.shape)
+    route = search_grid(grid, (3, 3), (45, 40), BALANCED)
+    rows, cols = zip(*route.cells)
+    assert move_costs(grid, rows, cols, BALANCED).sum() == pytest.approx(route.cost)
+
+
+def test_smoothing_straightens_a_staircase_on_flat_ground():
+    grid = flat_grid(50, 50)
+    route = search_grid(grid, (0, 0), (40, 13), SHORTEST)
+    smoothed = smooth_route(grid, route, SHORTEST)
+    expected_rows, expected_cols = straight_line((0, 0), (40, 13))
+    assert smoothed.cells == list(zip(expected_rows.tolist(), expected_cols.tolist()))
+    assert smoothed.cost <= route.cost + 1e-5
+
+
+def test_smoothing_ignores_tiny_cell_width_differences():
+    """Real cells narrow slightly with latitude, which shouldn't decide a route's shape."""
+    grid = flat_grid(300, 300)
+    width_change = np.linspace(0.948, 0.949, 300)
+    grid = PlanningGrid(
+        passable=grid.passable, dz_east=grid.dz_east, dz_north=grid.dz_north, penalty=grid.penalty,
+        dx_m=width_change, dy_m=1.0,
+    )
+    route = search_grid(grid, (0, 0), (250, 120), SHORTEST)
+    smoothed = smooth_route(grid, route, SHORTEST)
+    expected_rows, expected_cols = straight_line((0, 0), (250, 120))
+    assert smoothed.cells == list(zip(expected_rows.tolist(), expected_cols.tolist()))
+
+
+def test_smoothing_raises_cost_by_at_most_the_allowance():
+    rng = np.random.default_rng(11)
+    grid = flat_grid(120, 120)
+    grid.penalty[:] = rng.uniform(0, 1, grid.shape)
+    route = search_grid(grid, (5, 5), (110, 90), BALANCED)
+    smoothed = smooth_route(grid, route, BALANCED)
+    assert smoothed.cost <= route.cost * 1.002 + 1e-6
+
+
+def test_smoothing_never_crosses_blocked_ground():
+    grid = flat_grid(40, 40)
+    grid.passable[10:30, 20] = False
+    route = search_grid(grid, (20, 5), (20, 35), SHORTEST)
+    smoothed = smooth_route(grid, route, SHORTEST)
+    assert all(grid.passable[cell] for cell in smoothed.cells)
+    assert smoothed.cells[0] == (20, 5) and smoothed.cells[-1] == (20, 35)
+    assert_moves_are_connected(smoothed.cells)
+
+
+def test_smoothing_doesnt_take_a_shortcut_over_a_costly_ledge():
+    grid = flat_grid(40, 40)
+    grid.penalty[5:30, 20] = 50.0
+    route = search_grid(grid, (15, 5), (15, 35), CAUTIOUS)
+    smoothed = smooth_route(grid, route, CAUTIOUS)
+    assert smoothed.cost <= route.cost + 1e-5
+    assert all(not (5 <= row < 30 and col == 20) for row, col in smoothed.cells)
+
+
+def test_smoothing_a_missing_route_changes_nothing():
+    grid = flat_grid(20, 20)
+    grid.passable[:, 10] = False
+    route = search_grid(grid, (5, 2), (5, 18))
+    assert smooth_route(grid, route, SHORTEST) == route
 
 
 def test_small_areas_skip_the_coarse_pass():

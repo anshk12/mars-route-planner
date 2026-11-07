@@ -24,6 +24,7 @@ from mars_rover.rover.energy import RoverPhysics
 from mars_rover.rover.hazards import HazardClass, HazardLimits
 
 _MOVES = ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1))
+SMOOTHING_ALLOWANCE = 0.002  # A straightened section can cost up to 0.2% more.
 
 
 @dataclass(frozen=True)
@@ -306,6 +307,103 @@ def plan_route(
 
     route = search_grid(grid, start, goal, prefs)
     return replace(route, nodes_expanded=expanded + route.nodes_expanded, method="full fallback")
+
+
+def move_costs(grid: PlanningGrid, rows: NDArray, cols: NDArray, prefs: RoutePreferences) -> NDArray[np.float64]:
+    """Return the cost of each move along a path, using the same rules as the search."""
+    rows = np.asarray(rows, dtype=np.int64)
+    cols = np.asarray(cols, dtype=np.int64)
+    east = np.diff(cols) * grid.dx_m[rows[:-1]]
+    north = -np.diff(rows) * grid.dy_m
+    length = np.hypot(east, north)
+    per_meter = np.full(length.shape, float(prefs.distance))
+    if prefs.energy:
+        safe_length = np.where(length > 0, length, 1.0)
+        rise = (
+            grid.dz_east[rows[:-1], cols[:-1]].astype(np.float64) * east
+            + grid.dz_north[rows[:-1], cols[:-1]].astype(np.float64) * north
+        ) / safe_length
+        cos_grade = 1.0 / np.sqrt(1.0 + rise**2)
+        force = np.clip(grid.rolling_resistance * cos_grade + rise * cos_grade, 0.0, None)
+        per_meter += prefs.energy * force / grid.rolling_resistance
+    if prefs.hazard:
+        penalty = grid.penalty.astype(np.float64)
+        per_meter += prefs.hazard * 0.5 * (penalty[rows[:-1], cols[:-1]] + penalty[rows[1:], cols[1:]])
+    return per_meter * length
+
+
+def _line_cells(start: tuple[int, int], goal: tuple[int, int]) -> tuple[NDArray, NDArray]:
+    steps = max(abs(goal[0] - start[0]), abs(goal[1] - start[1]), 1) + 1
+    rows = np.rint(np.linspace(start[0], goal[0], steps)).astype(np.int64)
+    cols = np.rint(np.linspace(start[1], goal[1], steps)).astype(np.int64)
+    return rows, cols
+
+
+def _line_is_clear(grid: PlanningGrid, rows: NDArray, cols: NDArray) -> bool:
+    """Check a line of cells follows the search's rules, including no squeezing past corners."""
+    if not grid.passable[rows, cols].all():
+        return False
+    diagonal = (rows[:-1] != rows[1:]) & (cols[:-1] != cols[1:])
+    if diagonal.any():
+        side_a = grid.passable[rows[:-1][diagonal], cols[1:][diagonal]]
+        side_b = grid.passable[rows[1:][diagonal], cols[:-1][diagonal]]
+        return bool(side_a.all() and side_b.all())
+    return True
+
+
+def smooth_route(grid: PlanningGrid, route: Route, prefs: RoutePreferences) -> Route:
+    """Straighten a grid route wherever a direct line is clear and doesn't cost more.
+
+    Searching in 8 directions gives staircases, and it treats many different paths as equally short. Smoothing removes
+    those side effects. It never crosses blocked ground, and it raises a route's cost by at most SMOOTHING_ALLOWANCE.
+    """
+    if not route.found or len(route.cells) < 3:
+        return route
+    rows = np.array([cell[0] for cell in route.cells], dtype=np.int64)
+    cols = np.array([cell[1] for cell in route.cells], dtype=np.int64)
+    running_cost = np.r_[0.0, np.cumsum(move_costs(grid, rows, cols, prefs))]
+
+    out_rows, out_cols = [rows[:1]], [cols[:1]]
+    anchor = 0
+    last = rows.size - 1
+    while anchor < last:
+        reach = last - anchor
+        accepted = None
+        # Try the longest shortcut first, then halve it until one works.
+        while reach > 1:
+            target = anchor + reach
+            line_rows, line_cols = _line_cells((int(rows[anchor]), int(cols[anchor])), (int(rows[target]), int(cols[target])))
+            if _line_is_clear(grid, line_rows, line_cols):
+                line_cost = float(move_costs(grid, line_rows, line_cols, prefs).sum())
+                # Without a small allowance, tiny cell width differences would reject straight lines of nearly
+                # equal cost, leaving routes shaped by an effect that doesn't matter to a rover.
+                section_cost = running_cost[target] - running_cost[anchor]
+                if line_cost <= section_cost * (1.0 + SMOOTHING_ALLOWANCE) + 1e-6:
+                    accepted = (target, line_rows, line_cols)
+                    break
+            reach //= 2
+        if accepted is None:
+            out_rows.append(rows[anchor + 1 : anchor + 2])
+            out_cols.append(cols[anchor + 1 : anchor + 2])
+            anchor += 1
+        else:
+            target, line_rows, line_cols = accepted
+            out_rows.append(line_rows[1:])
+            out_cols.append(line_cols[1:])
+            anchor = target
+
+    new_rows = np.concatenate(out_rows)
+    new_cols = np.concatenate(out_cols)
+    costs = move_costs(grid, new_rows, new_cols, prefs)
+    east = np.diff(new_cols) * grid.dx_m[new_rows[:-1]]
+    north = -np.diff(new_rows) * grid.dy_m
+    return replace(
+        route,
+        cells=[(int(r), int(c)) for r, c in zip(new_rows, new_cols)],
+        cost=float(costs.sum()),
+        length_m=float(np.hypot(east, north).sum()),
+        method=f"{route.method}, smoothed",
+    )
 
 
 def nearest_passable(
