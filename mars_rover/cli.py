@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 from rasterio.windows import Window
 
+from .rover.hazards import HazardLimits, process_hazards
 from .sources import DTM_URL, LANDING_SITE_LON_LAT
 from .terrain.metrics import compute_metrics, required_margin
 from .terrain.pipeline import process_terrain
@@ -105,6 +106,17 @@ def command_process(args: argparse.Namespace) -> None:
         print(f"  {name:<12} {path}  ({path.stat().st_size / 1e6:.1f} MB)")
 
 
+def command_hazards(args: argparse.Namespace) -> None:
+    def show_progress(done: int, total: int) -> None:
+        if done % 20 == 0 or done == total:
+            print(f"  tile {done}/{total}", flush=True)
+
+    started = time.perf_counter()
+    limits = HazardLimits(slope_off_limits_deg=args.slope_limit)
+    path = process_hazards(args.derived, limits=limits, progress=show_progress)
+    print(f"Finished in {(time.perf_counter() - started) / 60:.1f} min: {path}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="mars_rover", description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -133,6 +145,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="process only this part of the map",
     )
     process.set_defaults(run=command_process)
+
+    hazards = commands.add_parser("hazards", help="classify ground from the terrain layers")
+    hazards.add_argument("--derived", type=Path, default=Path("data/derived"))
+    hazards.add_argument("--slope-limit", type=float, default=HazardLimits().slope_off_limits_deg)
+    hazards.set_defaults(run=command_hazards)
     return parser
 
 

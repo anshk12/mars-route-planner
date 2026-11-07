@@ -17,7 +17,7 @@ orbital data can and can't explain.
 | Stage | Goal | Status |
 |---|---|---|
 | 1 | Terrain engine: load huge maps, measure slope, roughness and step height | Done |
-| 2 | Rover model: hazard limits and energy | Not started |
+| 2 | Rover model: hazard limits and energy | First version done, with assumptions to review. See [decisions](docs/decisions.md) and [evidence](docs/stage2_evidence.md) |
 | 3 | Route planner | Not started |
 | 4 | Replay real drives and measure differences | Not started |
 | 5 | Estimate what the real drives prioritized | Not started |
@@ -63,6 +63,9 @@ whole file. To reproduce the full-map results, which need about 6 GB of free dis
 .\.venv\Scripts\python.exe -m scripts.download_data
 .\.venv\Scripts\python.exe -m mars_rover.cli process --source data\raw\JEZ_hirise_soc_006_DTM_MOLAtopography_DeltaGeoid_1m_Eqc_latTs0_lon0_blend40.tif
 .\.venv\Scripts\python.exe -m scripts.verify_full_map
+.\.venv\Scripts\python.exe -m mars_rover.cli hazards
+.\.venv\Scripts\python.exe -m scripts.route_terrain_stats
+.\.venv\Scripts\python.exe -m scripts.check_hazards_against_route
 ```
 
 ## How the terrain engine works
