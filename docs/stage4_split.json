@@ -1,0 +1,376 @@
+{
+  "seed": 2027,
+  "test_share": 0.3,
+  "block_m": 1000.0,
+  "route_files": [
+    {
+      "name": "waypoints",
+      "sha256": "bd143ee69241229926abd373e6305b8bbb326d6b5a7b4a8d6935262696f93dc4"
+    },
+    {
+      "name": "traverse",
+      "sha256": "6ddd0ece913d75b45d105946082f95ed84e68f4718b68d32a4421dc30877e7e6"
+    }
+  ],
+  "test_blocks": [
+    0,
+    8,
+    10,
+    21,
+    23,
+    26,
+    29,
+    31,
+    32,
+    33,
+    34,
+    39,
+    42
+  ],
+  "blocks": [
+    {
+      "block": 0,
+      "set": "test",
+      "first_sol": 14,
+      "last_sol": 130,
+      "drives": 42,
+      "length_m": 1093.0
+    },
+    {
+      "block": 1,
+      "set": "development",
+      "first_sol": 131,
+      "last_sol": 178,
+      "drives": 16,
+      "length_m": 1066.4
+    },
+    {
+      "block": 2,
+      "set": "development",
+      "first_sol": 180,
+      "last_sol": 341,
+      "drives": 23,
+      "length_m": 1160.2
+    },
+    {
+      "block": 3,
+      "set": "development",
+      "first_sol": 342,
+      "last_sol": 352,
+      "drives": 5,
+      "length_m": 1019.1
+    },
+    {
+      "block": 4,
+      "set": "development",
+      "first_sol": 353,
+      "last_sol": 379,
+      "drives": 9,
+      "length_m": 1188.3
+    },
+    {
+      "block": 5,
+      "set": "development",
+      "first_sol": 380,
+      "last_sol": 383,
+      "drives": 4,
+      "length_m": 1031.1
+    },
+    {
+      "block": 6,
+      "set": "development",
+      "first_sol": 384,
+      "last_sol": 389,
+      "drives": 6,
+      "length_m": 1209.8
+    },
+    {
+      "block": 7,
+      "set": "development",
+      "first_sol": 394,
+      "last_sol": 400,
+      "drives": 7,
+      "length_m": 1207.3
+    },
+    {
+      "block": 8,
+      "set": "test",
+      "first_sol": 401,
+      "last_sol": 407,
+      "drives": 5,
+      "length_m": 1084.4
+    },
+    {
+      "block": 9,
+      "set": "development",
+      "first_sol": 408,
+      "last_sol": 416,
+      "drives": 6,
+      "length_m": 1020.9
+    },
+    {
+      "block": 10,
+      "set": "test",
+      "first_sol": 418,
+      "last_sol": 436,
+      "drives": 13,
+      "length_m": 1061.0
+    },
+    {
+      "block": 11,
+      "set": "development",
+      "first_sol": 437,
+      "last_sol": 542,
+      "drives": 22,
+      "length_m": 1033.9
+    },
+    {
+      "block": 12,
+      "set": "development",
+      "first_sol": 543,
+      "last_sol": 641,
+      "drives": 14,
+      "length_m": 1027.8
+    },
+    {
+      "block": 13,
+      "set": "development",
+      "first_sol": 645,
+      "last_sol": 708,
+      "drives": 25,
+      "length_m": 1127.7
+    },
+    {
+      "block": 14,
+      "set": "development",
+      "first_sol": 709,
+      "last_sol": 717,
+      "drives": 6,
+      "length_m": 1124.3
+    },
+    {
+      "block": 15,
+      "set": "development",
+      "first_sol": 718,
+      "last_sol": 732,
+      "drives": 7,
+      "length_m": 1128.8
+    },
+    {
+      "block": 16,
+      "set": "development",
+      "first_sol": 736,
+      "last_sol": 763,
+      "drives": 6,
+      "length_m": 1136.5
+    },
+    {
+      "block": 17,
+      "set": "development",
+      "first_sol": 764,
+      "last_sol": 838,
+      "drives": 15,
+      "length_m": 1014.2
+    },
+    {
+      "block": 18,
+      "set": "development",
+      "first_sol": 843,
+      "last_sol": 905,
+      "drives": 17,
+      "length_m": 1111.0
+    },
+    {
+      "block": 19,
+      "set": "development",
+      "first_sol": 907,
+      "last_sol": 931,
+      "drives": 8,
+      "length_m": 1007.9
+    },
+    {
+      "block": 20,
+      "set": "development",
+      "first_sol": 932,
+      "last_sol": 959,
+      "drives": 7,
+      "length_m": 1077.4
+    },
+    {
+      "block": 21,
+      "set": "test",
+      "first_sol": 960,
+      "last_sol": 1002,
+      "drives": 10,
+      "length_m": 1026.6
+    },
+    {
+      "block": 22,
+      "set": "development",
+      "first_sol": 1004,
+      "last_sol": 1045,
+      "drives": 10,
+      "length_m": 1182.0
+    },
+    {
+      "block": 23,
+      "set": "test",
+      "first_sol": 1046,
+      "last_sol": 1115,
+      "drives": 22,
+      "length_m": 1007.2
+    },
+    {
+      "block": 24,
+      "set": "development",
+      "first_sol": 1116,
+      "last_sol": 1162,
+      "drives": 25,
+      "length_m": 1107.2
+    },
+    {
+      "block": 25,
+      "set": "development",
+      "first_sol": 1168,
+      "last_sol": 1219,
+      "drives": 16,
+      "length_m": 1114.1
+    },
+    {
+      "block": 26,
+      "set": "test",
+      "first_sol": 1220,
+      "last_sol": 1265,
+      "drives": 17,
+      "length_m": 1049.8
+    },
+    {
+      "block": 27,
+      "set": "development",
+      "first_sol": 1266,
+      "last_sol": 1283,
+      "drives": 10,
+      "length_m": 1027.9
+    },
+    {
+      "block": 28,
+      "set": "development",
+      "first_sol": 1284,
+      "last_sol": 1321,
+      "drives": 20,
+      "length_m": 1002.0
+    },
+    {
+      "block": 29,
+      "set": "test",
+      "first_sol": 1322,
+      "last_sol": 1348,
+      "drives": 12,
+      "length_m": 1017.6
+    },
+    {
+      "block": 30,
+      "set": "development",
+      "first_sol": 1349,
+      "last_sol": 1380,
+      "drives": 8,
+      "length_m": 1107.8
+    },
+    {
+      "block": 31,
+      "set": "test",
+      "first_sol": 1381,
+      "last_sol": 1470,
+      "drives": 20,
+      "length_m": 1018.2
+    },
+    {
+      "block": 32,
+      "set": "test",
+      "first_sol": 1472,
+      "last_sol": 1512,
+      "drives": 9,
+      "length_m": 1009.8
+    },
+    {
+      "block": 33,
+      "set": "test",
+      "first_sol": 1518,
+      "last_sol": 1556,
+      "drives": 10,
+      "length_m": 1077.8
+    },
+    {
+      "block": 34,
+      "set": "test",
+      "first_sol": 1558,
+      "last_sol": 1595,
+      "drives": 13,
+      "length_m": 1055.6
+    },
+    {
+      "block": 35,
+      "set": "development",
+      "first_sol": 1597,
+      "last_sol": 1675,
+      "drives": 18,
+      "length_m": 1181.0
+    },
+    {
+      "block": 36,
+      "set": "development",
+      "first_sol": 1676,
+      "last_sol": 1698,
+      "drives": 6,
+      "length_m": 1085.0
+    },
+    {
+      "block": 37,
+      "set": "development",
+      "first_sol": 1699,
+      "last_sol": 1710,
+      "drives": 8,
+      "length_m": 1036.3
+    },
+    {
+      "block": 38,
+      "set": "development",
+      "first_sol": 1756,
+      "last_sol": 1815,
+      "drives": 17,
+      "length_m": 1207.0
+    },
+    {
+      "block": 39,
+      "set": "test",
+      "first_sol": 1817,
+      "last_sol": 1893,
+      "drives": 20,
+      "length_m": 1070.0
+    },
+    {
+      "block": 40,
+      "set": "development",
+      "first_sol": 1896,
+      "last_sol": 1917,
+      "drives": 8,
+      "length_m": 1042.3
+    },
+    {
+      "block": 41,
+      "set": "development",
+      "first_sol": 1921,
+      "last_sol": 1946,
+      "drives": 8,
+      "length_m": 1056.2
+    },
+    {
+      "block": 42,
+      "set": "test",
+      "first_sol": 1947,
+      "last_sol": 2022,
+      "drives": 9,
+      "length_m": 637.4
+    }
+  ]
+}
