@@ -20,7 +20,7 @@ orbital data can and can't explain.
 | 2 | Rover model: hazard limits and energy | First version done, with assumptions to review. See [decisions](docs/decisions.md) and [evidence](docs/stage2_evidence.md) |
 | 3 | Route planner | First version done. See [notes](docs/stage3_notes.md) |
 | 4 | Replay real drives and measure differences | Development results done: with provisional weights, the planner doesn't clearly beat a straight line. Test set locked. See [results](docs/stage4_development.md) |
-| 5 | Estimate what the real drives prioritized | Not started |
+| 5 | Estimate what the real drives prioritized | Development results done: a small gain on long-pause segments, none on 200 m segments. Final test not run. See [results](docs/stage5_weights.md) |
 | 6+ | Vision, uncertainty, new mission and public website | Not started |
 
 ## Early results
